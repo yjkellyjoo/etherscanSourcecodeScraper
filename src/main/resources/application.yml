@@ -1,0 +1,22 @@
+# spring
+spring:
+  application:
+    name: etherscanSourcecodeScraper
+
+  #profile 설정을 안했을 시 active profile
+  profiles:
+    active: local
+
+---
+
+spring:
+  profiles: local
+  datasource:
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    url: "jdbc:mysql://127.0.0.1:3306/contracts?useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
+    username: "contract"
+    password: "Smart12#"
+ 
+
+mybatis:
+  mapper-locations: "classpath:mybatis/mapper/**/*.xml"
