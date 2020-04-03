@@ -18,7 +18,7 @@ public class SourcecodeCrawler {
 	private SourcecodeCrawlerService sourcecodeCrawlerService;
 	
 	public void startCrawl() {
-		sourcecodeCrawlerService.perform();
+		sourcecodeCrawlerService.manageContracts();
 	}
 	
 }

@@ -34,12 +34,14 @@
 			TB_SOURCECODE
 	</sql>
 	
+	
 	<select id="selectData" resultMap="SourcecodeDataMap">
 		<include refid="selectCveSql" />
 		WHERE 
 			TB_SOURCECODE.ADDRESS = #{ADDRESS}	
     	/* yjkellyjoo.contract.dao.SourcecodeDao.selectData */
 	</select>	
+	
 	
 	<insert id="insertAllData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
 		INSERT INTO TB_SOURCECODE (
@@ -74,6 +76,11 @@
 	</insert>
 
 
+	<delete id="deleteAllData">
+		DELETE FROM TB_SOURCECODE
+		/* yjkellyjoo.contract.dao.SourcecodeDao.deleteAllData */
+	</delete>
+
 
 
 
@@ -97,11 +104,6 @@
 		where ID = #{id}
 		/* yjkellyjoo.contract.dao.SourcecodeDao.updateData */
 	</update>
-
-	<delete id="deleteAllData">
-		DELETE FROM TB_SOURCECODE
-		/* yjkellyjoo.contract.dao.SourcecodeDao.deleteAllData */
-	</delete>
 
 	<select id="selectCveListInLimit" parameterType="hashmap" resultMap="SourcecodeDataMap">
 		SELECT

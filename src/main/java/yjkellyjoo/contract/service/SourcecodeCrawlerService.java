@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +50,10 @@ public class SourcecodeCrawlerService {
 	private static final String URL_BACK = "&apikey=W1R717YYPKPI2I7BVU7VS8Q4WWS5QYS4I1";
 	
 	
-	public void perform() {
+	public void manageContracts() {
+		
+		// clear out the table
+		sourcecodeDao.deleteAllData();
 		
 		// get URLs from csv file
 //		ArrayList<String> urls = this.getCsvURL();
@@ -66,15 +70,19 @@ public class SourcecodeCrawlerService {
 				List<SourcecodeVo> contractArray = this.getData(urls);
 				// insert data
 				if (!contractArray.isEmpty()) {
+//					int _index = 0;
+//					for (SourcecodeVo sourcecodeVo : contractArray) {
+//						System.out.println(_index++);
+//						log.info(sourcecodeVo.getAddress());
+//					}
 					try {
-						int _index = 0;
-						for (SourcecodeVo sourcecodeVo : contractArray) {
-							System.out.println(_index++);
-							log.info(sourcecodeVo.getAddress());
-						}
 						sourcecodeDao.insertAllData(contractArray);
-					} catch(NullPointerException e) {
-						e.printStackTrace();
+						log.info("insertAllData");						
+					} catch (DataIntegrityViolationException e) {
+						// TODO: handle exception
+						for (SourcecodeVo sourcecodeVo : contractArray) {
+							log.error(sourcecodeVo.getAddress());
+						}
 					}
 				}
 				line = reader.readLine();
@@ -82,10 +90,8 @@ public class SourcecodeCrawlerService {
 			reader.close();
 			
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -170,7 +176,7 @@ public class SourcecodeCrawlerService {
 			url.append(URL_BACK);
 			
 			urls.add(url.toString());
-			if (count % 15 == 14) {
+			if (count % 150 == 149) {
 				break;
 			}
 			
