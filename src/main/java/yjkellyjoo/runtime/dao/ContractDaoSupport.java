@@ -2,7 +2,6 @@ package yjkellyjoo.runtime.dao;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import lombok.Getter;
 
@@ -14,7 +13,7 @@ import lombok.Getter;
 @Getter
 public abstract class ContractDaoSupport {
 
-	@Autowired(required=false)
+	@Autowired
 	private SqlSessionTemplate sqlSession;
 
 }

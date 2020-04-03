@@ -36,7 +36,11 @@ public class SourcecodeDao extends ContractDaoSupport {
 	 * @param SOURCECODE array
 	 */
 	public void insertAllData(List<SourcecodeVo> contractArray) {
-		
+		for (SourcecodeVo sourcecodeVo : contractArray) {
+			int _index = 0;
+			System.out.println(_index + ": " + sourcecodeVo.getAddress());
+			_index++;
+		}
 		getSqlSession().insert("yjkellyjoo.contract.dao.SourcecodeDao.insertAllData", contractArray);
 	}
 	
