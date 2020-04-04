@@ -4,6 +4,8 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+./upload_backup/
+
 ### STS ###
 .apt_generated
 .classpath

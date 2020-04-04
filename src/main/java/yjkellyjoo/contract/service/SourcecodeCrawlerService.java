@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -38,20 +39,18 @@ import yjkellyjoo.runtime.util.FileUtil;
 @Slf4j
 @Service("yjkellyjoo.contract.service.SourcecodeCrawlerService")
 public class SourcecodeCrawlerService {
-	
+
 	@Resource(name="yjkellyjoo.contract.dao.SourcecodeDao")
 	private SourcecodeDao sourcecodeDao;
 	
 	@Resource(name="yjkellyjoo.runtime.util.FileUtil")
 	private FileUtil fileUtil;
 	
-	private static final String CSV_FILE_PATH = "./export-verified-contractaddress-opensource-license.csv";
-	private static final String JSON_FILE_PATH = "./bq-results-20200401-171150-vp6f1zm8u2mt.json";
 	private static final String URL_FRONT = "https://api.etherscan.io/api?module=contract&action=getsourcecode&address=";
 	private static final String URL_BACK = "&apikey=W1R717YYPKPI2I7BVU7VS8Q4WWS5QYS4I1";
+
 	
-	
-	public void manageContracts() {
+	public void manageContracts(String filePath, Integer fileNumber) {
 		
 		// clear out the table
 	   	log.info("  ---\tClear Old data\t  ---");
@@ -60,37 +59,16 @@ public class SourcecodeCrawlerService {
 		// get URLs from csv file
 //		ArrayList<String> urls = this.getCsvURL();
 	
-		// get URLs from json file, 1500 at a time	
-		BufferedReader reader;
-		try {
-			reader = new BufferedReader(new FileReader(JSON_FILE_PATH));
-			String line = reader.readLine();
-			while (line != null) {
-				List<String> urls = this.getJsonURL(reader, line);
-				
-				// get Data from web
-				List<SourcecodeVo> contractArray = this.getData(urls);
-				// insert data
-//				this.insertAllData(contractArray);
-				if (!contractArray.isEmpty()) {
-					this.insertAllData(contractArray);
-//					try {
-//						sourcecodeDao.insertAllData(contractArray);
-//						log.info("  ---\tInserted Data\t  ---");						
-//					} catch (DataIntegrityViolationException e) {
-//						for (SourcecodeVo sourcecodeVo : contractArray) {
-//							log.error(sourcecodeVo.getAddress());
-//						}
-//					}
-				}
-				line = reader.readLine();
-			}
-			reader.close();
+		// get URLs from each json file
+		for (int i = 1; i <= fileNumber.intValue(); i++) {
+			// get URLs
+			List<String> urls = this.getJsonURL(filePath + i);
+	
+			// get Data from web
+			List<SourcecodeVo> contractArray = this.getData(urls);
 			
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			// insert data
+			this.insertAllData(contractArray);
 		}
 		
 	}
@@ -104,7 +82,7 @@ public class SourcecodeCrawlerService {
 		if (!contractArray.isEmpty()) {
 			try {
 				sourcecodeDao.insertAllData(contractArray);
-				log.info("insertAllData");						
+				log.info("  ---\tInserted Data\t  ---");						
 			} catch (DataIntegrityViolationException e) {
 				for (SourcecodeVo sourcecodeVo : contractArray) {
 					log.error(sourcecodeVo.getAddress());
@@ -146,63 +124,70 @@ public class SourcecodeCrawlerService {
 	 * make URLs from address information in CSV file
 	 * @return ArrayList containing url strings
 	 */
-	private ArrayList<String> getCsvURL() {
-		ArrayList<String> urls = new ArrayList<String>();
-		
-		try(Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH));
-				CSVReader csvReader = new CSVReader(reader);){
-				
-				List<String[]> records = csvReader.readAll();
-				for (String[] record : records) {
-					String address = record[1];
-					StringBuffer url = new StringBuffer();
-					url.append(URL_FRONT);
-					url.append(address);
-					url.append(URL_BACK);
-					
-					urls.add(url.toString());
-				}
-				
-			} catch (IOException e) {
-				log.error("csv file read error.");
-				e.printStackTrace();
-			}	
-		
-		return urls;
-	}
+//	private ArrayList<String> getCsvURL() {
+//		ArrayList<String> urls = new ArrayList<String>();
+//		
+//		try(Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH));
+//				CSVReader csvReader = new CSVReader(reader);){
+//				
+//				List<String[]> records = csvReader.readAll();
+//				for (String[] record : records) {
+//					String address = record[1];
+//					StringBuffer url = new StringBuffer();
+//					url.append(URL_FRONT);
+//					url.append(address);
+//					url.append(URL_BACK);
+//					
+//					urls.add(url.toString());
+//				}
+//				
+//			} catch (IOException e) {
+//				log.error("csv file read error.");
+//				e.printStackTrace();
+//			}	
+//		
+//		return urls;
+//	}
 
 	
 	/**
-	 * get 1500 URLs from a json file
+	 * get URLs from a json file
 	 * @param	BufferedReader of the file
 	 * @param	first line from the Reader
 	 * @return	ArrayList containing url strings
 	 */
-	private List<String> getJsonURL(BufferedReader reader, String line) {
+	private List<String> getJsonURL(String filePath) {
 		List<String> urls = new ArrayList<String>();
-		int count = 1;
-		
-		while (line != null) {
-			JSONObject obj = new JSONObject(line);
-			String address = obj.get("address").toString();
-		
-			StringBuffer url = new StringBuffer();
-			url.append(URL_FRONT);
-			url.append(address);
-			url.append(URL_BACK);
+
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filePath + ".json"));
+			String line = reader.readLine();
+			while (line != null) {
+				JSONObject obj = new JSONObject(line);
+				String address = obj.get("address").toString();
 			
-			urls.add(url.toString());
-			if (count % 150 == 149) {
-				break;
+				StringBuffer url = new StringBuffer();
+				url.append(URL_FRONT);
+				url.append(address);
+				url.append(URL_BACK);
+				
+				urls.add(url.toString());
+
+				try {
+					// read next line
+					line = reader.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
+			reader.close();
 			
-			try {
-				// read next line
-				line = reader.readLine();
-				count++;
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		
 		}
 		
 		return urls;
