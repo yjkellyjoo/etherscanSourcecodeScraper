@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -53,6 +54,7 @@ public class SourcecodeCrawlerService {
 	public void manageContracts() {
 		
 		// clear out the table
+	   	log.info("  ---\tClear Old data\t  ---");
 		sourcecodeDao.deleteAllData();
 		
 		// get URLs from csv file
@@ -69,21 +71,17 @@ public class SourcecodeCrawlerService {
 				// get Data from web
 				List<SourcecodeVo> contractArray = this.getData(urls);
 				// insert data
+//				this.insertAllData(contractArray);
 				if (!contractArray.isEmpty()) {
-//					int _index = 0;
-//					for (SourcecodeVo sourcecodeVo : contractArray) {
-//						System.out.println(_index++);
-//						log.info(sourcecodeVo.getAddress());
+					this.insertAllData(contractArray);
+//					try {
+//						sourcecodeDao.insertAllData(contractArray);
+//						log.info("  ---\tInserted Data\t  ---");						
+//					} catch (DataIntegrityViolationException e) {
+//						for (SourcecodeVo sourcecodeVo : contractArray) {
+//							log.error(sourcecodeVo.getAddress());
+//						}
 //					}
-					try {
-						sourcecodeDao.insertAllData(contractArray);
-						log.info("insertAllData");						
-					} catch (DataIntegrityViolationException e) {
-						// TODO: handle exception
-						for (SourcecodeVo sourcecodeVo : contractArray) {
-							log.error(sourcecodeVo.getAddress());
-						}
-					}
 				}
 				line = reader.readLine();
 			}
@@ -97,6 +95,24 @@ public class SourcecodeCrawlerService {
 		
 	}
 
+
+	/**
+	 * insert all data into Database
+	 * @param list of contracts information in Sourcecode VO
+	 */
+	private void insertAllData(List<SourcecodeVo> contractArray) {
+		if (!contractArray.isEmpty()) {
+			try {
+				sourcecodeDao.insertAllData(contractArray);
+				log.info("insertAllData");						
+			} catch (DataIntegrityViolationException e) {
+				for (SourcecodeVo sourcecodeVo : contractArray) {
+					log.error(sourcecodeVo.getAddress());
+				}
+			}
+		}
+	}
+	
 
 	/**
 	 * Set one Contract Data info into one SourcecodeVo object
@@ -210,7 +226,7 @@ public class SourcecodeCrawlerService {
 				
 				if (jsonText.get("result").getClass() == JSONArray.class) {
 					JSONObject resultObject = jsonText.getJSONArray("result").getJSONObject(0);
-					if (!resultObject.isEmpty()) {
+					if (Objects.nonNull(resultObject)) {
 						int beginIndex = url.indexOf("address") + 8;
 						int endIndex = url.indexOf("&apikey");
 						String address = url.substring(beginIndex, endIndex);
@@ -246,7 +262,7 @@ public class SourcecodeCrawlerService {
 			if (contract != null) {
 				if (!contract.getSourceCode().isEmpty()) {
 					contractArray.add(contract);								
-					log.info("inserted : {}", contract.getAddress());					
+					log.info("added : {}", contract.getAddress());					
 				}
 			}
 

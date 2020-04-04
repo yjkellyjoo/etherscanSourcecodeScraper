@@ -4,32 +4,32 @@
 <mapper namespace="yjkellyjoo.contract.dao.SourcecodeDao">
 	
 	<resultMap id="SourcecodeDataMap" type="yjkellyjoo.contract.model.SourcecodeVo">
-		<id column="ADDRESS" property="address" />
+		<id column="Address" property="address" />
 		<result column="ABI" property="abi" />  			
-		<result column="COMPILERVERSION" property="compilerVersion" />  			
-		<result column="CONSTRUCTORARGUMENTS" property="constructorArguments" />  			
-		<result column="CONTRACTNAME" property="contractName" />  			
-		<result column="LIBRARY" property="library" />			
-		<result column="LICENSETYPE" property="licenseType" />  			
-		<result column="OPTIMIZATIONUSED" property="optimizationUsed" />  			
-		<result column="RUNS" property="runs" />  			
-		<result column="SOURCECODE" property="sourceCode" />  			
-		<result column="SWARMSOURCE" property="swarmSource" /> 	
+		<result column="CompilerVersion" property="compilerVersion" />  			
+		<result column="ConstructorArguments" property="constructorArguments" />  			
+		<result column="ContractName" property="contractName" />  			
+		<result column="Library" property="library" />			
+		<result column="LicenseType" property="licenseType" />  			
+		<result column="OptimizationUsed" property="optimizationUsed" />  			
+		<result column="Runs" property="runs" />  			
+		<result column="SourceCode" property="sourceCode" />  			
+		<result column="SwarmSource" property="swarmSource" /> 	
 	</resultMap>
 
 	<sql id="selectCveSql">
 		SELECT 
-			TB_SOURCECODE.ADDRESS, 
+			TB_SOURCECODE.Address, 
 			TB_SOURCECODE.ABI, 
-			TB_SOURCECODE.COMPILERVERSION, 
-			TB_SOURCECODE.CONSTRUCTORARGUMENTS, 
-			TB_SOURCECODE.CONTRACTNAME, 
-			TB_SOURCECODE.LIBRARY, 
-			TB_SOURCECODE.LICENSETYPE, 
-			TB_SOURCECODE.OPTIMIZATIONUSED,
-			TB_SOURCECODE.RUNS,
-			TB_SOURCECODE.SOURCECODE,	
-			TB_SOURCECODE.SWARMSOURCE
+			TB_SOURCECODE.CompilerVersion, 
+			TB_SOURCECODE.ConstructorArguments, 
+			TB_SOURCECODE.ContractName, 
+			TB_SOURCECODE.Library, 
+			TB_SOURCECODE.LicenseType, 
+			TB_SOURCECODE.OptimizationUsed,
+			TB_SOURCECODE.Runs,
+			TB_SOURCECODE.SourceCode,	
+			TB_SOURCECODE.SwarmSource
 		FROM
 			TB_SOURCECODE
 	</sql>
@@ -45,17 +45,17 @@
 	
 	<insert id="insertAllData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
 		INSERT INTO TB_SOURCECODE (
-			ADDRESS, 
+			Address, 
 			ABI, 
-			COMPILERVERSION, 
-			CONSTRUCTORARGUMENTS, 
-			CONTRACTNAME, 
-			LIBRARY, 
-			LICENSETYPE, 
-			OPTIMIZATIONUSED,
-			RUNS,
-			SOURCECODE,	
-			SWARMSOURCE
+			CompilerVersion, 
+			ConstructorArguments, 
+			ContractName, 
+			Library, 
+			LicenseType, 
+			OptimizationUsed,
+			Runs,
+			SourceCode,	
+			SwarmSource
 		) VALUES 
 		<foreach collection="list" item="item" separator=", ">
 		(
@@ -82,7 +82,7 @@
 	</delete>
 
 
-
+<!-- 
 
 	<update id="updateData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
 		update TB_SOURCECODE set
@@ -114,5 +114,5 @@
 		LIMIT #{start}, #{end}
     	/* yjkellyjoo.contract.dao.SourcecodeDao.selectCveListInLimit */
 	</select>
-
+ -->
 </mapper>
