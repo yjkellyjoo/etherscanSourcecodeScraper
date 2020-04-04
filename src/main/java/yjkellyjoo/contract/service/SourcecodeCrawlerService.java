@@ -1,6 +1,5 @@
 package yjkellyjoo.contract.service;
 
-import com.opencsv.CSVReader;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -9,9 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +17,6 @@ import javax.annotation.Resource;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -50,27 +45,15 @@ public class SourcecodeCrawlerService {
 	private static final String URL_BACK = "&apikey=W1R717YYPKPI2I7BVU7VS8Q4WWS5QYS4I1";
 
 	
-	public void manageContracts(String filePath, Integer fileNumber) {
+	public void manageContracts(String filePath) {
+		// get URLs
+		List<String> urls = this.getJsonURL(filePath);
+
+		// get Data from web
+		List<SourcecodeVo> contractArray = this.getData(urls);
 		
-		// clear out the table
-	   	log.info("  ---\tClear Old data\t  ---");
-		sourcecodeDao.deleteAllData();
-		
-		// get URLs from csv file
-//		ArrayList<String> urls = this.getCsvURL();
-	
-		// get URLs from each json file
-		for (int i = 1; i <= fileNumber.intValue(); i++) {
-			// get URLs
-			List<String> urls = this.getJsonURL(filePath + i);
-	
-			// get Data from web
-			List<SourcecodeVo> contractArray = this.getData(urls);
-			
-			// insert data
-			this.insertAllData(contractArray);
-		}
-		
+		// insert data
+		this.insertAllData(contractArray);
 	}
 
 
@@ -82,7 +65,7 @@ public class SourcecodeCrawlerService {
 		if (!contractArray.isEmpty()) {
 			try {
 				sourcecodeDao.insertAllData(contractArray);
-				log.info("  ---\tInserted Data\t  ---");						
+				log.info("  ---\tInserted Data\t  ---");
 			} catch (DataIntegrityViolationException e) {
 				for (SourcecodeVo sourcecodeVo : contractArray) {
 					log.error(sourcecodeVo.getAddress());
@@ -152,16 +135,15 @@ public class SourcecodeCrawlerService {
 	
 	/**
 	 * get URLs from a json file
-	 * @param	BufferedReader of the file
-	 * @param	first line from the Reader
-	 * @return	ArrayList containing url strings
+	 * @param filePath
+	 * @return
 	 */
 	private List<String> getJsonURL(String filePath) {
 		List<String> urls = new ArrayList<String>();
 
 		BufferedReader reader;
 		try {
-			reader = new BufferedReader(new FileReader(filePath + ".json"));
+			reader = new BufferedReader(new FileReader(filePath));
 			String line = reader.readLine();
 			while (line != null) {
 				JSONObject obj = new JSONObject(line);
@@ -198,9 +180,10 @@ public class SourcecodeCrawlerService {
 	 * @param	List of urls
 	 * @result	List of contract information in the form of SourcecodeVo
 	 */
-	private List<SourcecodeVo> getData(List<String> urls) {		
+	private List<SourcecodeVo> getData(List<String> urls) {
 		List<SourcecodeVo> contractArray = new ArrayList<SourcecodeVo>();
-
+		int count = 1;
+		
 		for (String url : urls) {
 			SourcecodeVo contract = null;
 
@@ -217,7 +200,9 @@ public class SourcecodeCrawlerService {
 						String address = url.substring(beginIndex, endIndex);
 						log.debug(address);
 						
-						contract = this.setOneData(resultObject, address);			
+						contract = this.setOneData(resultObject, address);	
+						log.info("{} processed ", count);
+						count++;
 //					log.info(resultObject.toString());
 					}
 				}
@@ -243,7 +228,7 @@ public class SourcecodeCrawlerService {
 //				log.debug(contract.getAddress());
 			}
 
-			// write data into array
+			// write data with source code into array
 			if (contract != null) {
 				if (!contract.getSourceCode().isEmpty()) {
 					contractArray.add(contract);								

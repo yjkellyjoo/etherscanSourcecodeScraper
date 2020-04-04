@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.Scanner;
@@ -62,9 +65,23 @@ public class FileUtil {
 	}
 	
 	/**
+	 * 파일 위치 옮기
+	 * @param srcFile
+	 * @param desDir
+	 * @throws IOException 
+	 */
+	public Path moveFile(String srcFile, String desFile) throws IOException {
+		String backupPath = System.getProperty("user.dir");
+		
+		Path temp = Files.move(Paths.get(backupPath + "/" + srcFile), Paths.get(backupPath + "/" + desFile));
+        return temp;
+	}
+	
+	/**
 	 * 특정 URL로부터 파일 다운로드
 	 * @param url
-	 * @return
+	 * @param name
+	 * @return downloaded file
 	 */
 	public File downloadFileFromUrl(String url, String name) {
 		
