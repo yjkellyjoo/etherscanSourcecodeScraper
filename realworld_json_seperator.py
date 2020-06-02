@@ -48,7 +48,7 @@ def convert_ijson_count(file_name):
                         codefile.writelines(value)
 
                         # metadata
-                        with open('metadata.csv', 'a', newline='') as csvf:
+                        with open('./realworld_code/metadata.csv', 'a', newline='') as csvf:
                             metawriter = csv.writer(csvf)
                             metawriter.writerow([sol_name, contract_name])
 
