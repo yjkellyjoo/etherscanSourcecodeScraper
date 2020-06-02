@@ -1,1 +1,2 @@
 mysql-connector-python
+ijson==3.0.4

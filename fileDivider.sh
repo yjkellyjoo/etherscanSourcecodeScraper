@@ -2,7 +2,7 @@
 
 #json objects 쪼개기
 contracts_dir="./upload_backup/contracts/"
-original_filePath="./upload_backup/bq-results-20200401-171150-vp6f1zm8u2mt.json"
+original_filePath="./upload_backup/lesat_ether_address.json"
 
 if (( `ls ${contracts_dir} | wc -w`==0 )); then
 	mkdir -m 0775 ${contracts_dir}
