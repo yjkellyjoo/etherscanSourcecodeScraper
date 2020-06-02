@@ -52,7 +52,7 @@ def convert_ijson_count(file_name):
                             metawriter = csv.writer(csvf)
                             metawriter.writerow([sol_name, contract_name])
 
-                        print(contract_name + ' written')
+                        print(sol_name + ' written')
                         break
                 codefile.close()
 
