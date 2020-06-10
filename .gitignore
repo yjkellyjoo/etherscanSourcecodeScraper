@@ -1,8 +1,8 @@
 HELP.md
-java/target/
-!java/.mvn/wrapper/maven-wrapper.jar
-!**java/src/main/**
-!**java/src/test/**
+etherscanSourcecodeScraper/target/
+!etherscanSourcecodeScraper/.mvn/wrapper/maven-wrapper.jar
+!**etherscanSourcecodeScraper/src/main/**
+!**etherscanSourcecodeScraper/src/test/**
 
 upload_backup/
 
@@ -16,7 +16,7 @@ upload_backup/
 .sts4-cache
 
 ### JetBrain IDEA ###
-*/.idea
+.idea
 *.iws
 *.iml
 *.ipr
@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+venv/
+
+### python ###
+python/realworld_code/
