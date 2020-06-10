@@ -78,13 +78,15 @@ public class SourcecodeCrawlerService {
 				}
 			}
 
-			try {
-				sourcecodeDao.insertAllData(insertArray);
-				log.info("  ---\tInserted Data\t  ---");
-			} catch (DataIntegrityViolationException e) {
-				for (SourcecodeVo sourcecodeVo : insertArray) {
-					log.error(sourcecodeVo.getAddress());
-				}
+			if (!insertArray.isEmpty()) {
+				try {
+					sourcecodeDao.insertAllData(insertArray);
+					log.info("  ---\tInserted Data\t  ---");
+				} catch (DataIntegrityViolationException e) {
+					for (SourcecodeVo sourcecodeVo : insertArray) {
+						log.error(sourcecodeVo.getAddress());
+					}
+				}				
 			}
 		}
 	}
