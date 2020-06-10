@@ -68,8 +68,8 @@ public class SourcecodeCrawlerService {
 
 				// if address not in DB, insert
 				SourcecodeVo contract = sourcecodeDao.selectData(address);
-				if (!contract.getAddress().isEmpty()){
-					insertArray.add(contract);
+				if (contract == null){
+					insertArray.add(contractArray.get(address));
 				}
 
 				// if address in DB, update balance

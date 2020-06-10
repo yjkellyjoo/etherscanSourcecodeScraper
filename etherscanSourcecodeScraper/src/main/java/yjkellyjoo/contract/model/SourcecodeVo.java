@@ -22,4 +22,5 @@ public class SourcecodeVo {
 	private int runs;
 	private String sourceCode;
 	private String swarmSource;
+	private int balance;
 }

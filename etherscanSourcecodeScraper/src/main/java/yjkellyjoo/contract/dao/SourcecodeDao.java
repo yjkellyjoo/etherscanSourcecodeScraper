@@ -59,10 +59,10 @@ public class SourcecodeDao extends ContractDaoSupport {
 	 * @param address 키값
 	 * @return SOURCECODE 레코드
 	 */
-	public void updateData(String address) {
+	public void updateData(String balance) {
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("address", address);
+		paramMap.put("address", balance);
 
 		getSqlSession().update("yjkellyjoo.contract.dao.SourcecodeDao.updateData", paramMap);
 	}

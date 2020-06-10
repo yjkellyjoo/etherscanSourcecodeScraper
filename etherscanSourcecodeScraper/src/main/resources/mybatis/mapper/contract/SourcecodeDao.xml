@@ -55,7 +55,8 @@
 			OptimizationUsed,
 			Runs,
 			SourceCode,	
-			SwarmSource
+			SwarmSource,
+			Balance
 		) VALUES 
 		<foreach collection="list" item="item" separator=", ">
 		(
@@ -69,7 +70,8 @@
 			#{item.optimizationUsed},
 			#{item.runs},
 			#{item.sourceCode},
-			#{item.swarmSource}
+			#{item.swarmSource},
+			#{item.balance}
 		)
 		</foreach>
 		/* yjkellyjoo.contract.dao.SourcecodeDao.insertAllData */
@@ -84,17 +86,7 @@
 
 	<update id="updateData">
 		update TB_SOURCECODE set
-			ABI = #{abi},
- 			CompilerVersion = #{compilerVersion},
-			ConstructorArguments = #{constructorArguments},
-			ContractName = #{contractName},
-			Library = #{library},
-			LicenseType = #{licenseType},
-			OptimizationUsed = #{optimizationUsed},
-			Runs = #{runs},
-			SourceCode = #{sourceCode},
-			SwarmSource = #{swarmSource},
-			Balance = #{Balance}
+			Balance = #{balance}
 		where ADDRESS = #{ADDRESS}
 		/* yjkellyjoo.contract.dao.SourcecodeDao.updateData */
 	</update>
