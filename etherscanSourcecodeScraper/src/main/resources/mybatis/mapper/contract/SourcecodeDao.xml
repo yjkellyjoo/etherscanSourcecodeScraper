@@ -82,37 +82,33 @@
 	</delete>
 
 
-<!-- 
-
 	<update id="updateData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
 		update TB_SOURCECODE set
-			BASIC_INFO = #{basicInfo}, 
-			AFFECTS = #{affects},
- 			PROBLEM_TYPE = #{problemType}, 
-			CWE_ID = #{cweId}, 
-			`REFERENCES` = #{references},
-			DESCRIPTION = #{description},
-			PUBLISHED_DATE = #{publishedDate},
-			LAST_MODIFIED_DATE = #{lastModifiedDate},
-			CONFIGURATIONS = #{configurations},	
-			BASE_METRIC_V3 = #{baseMetricV3},
-			V3_BASE_SCORE = #{v3BaseScore},
-			V3_SEVERITY = #{v3Severity},
-			BASE_METRIC_V2 = #{baseMetricV2},
-			V2_BASE_SCORE = #{v2BaseScore},
-			V2_SEVERITY = #{v2Severity}
-		where ID = #{id}
+			ABI = #{abi},
+ 			CompilerVersion = #{compilerVersion},
+			ConstructorArguments = #{constructorArguments},
+			ContractName = #{contractName},
+			Library = #{library},
+			LicenseType = #{licenseType},
+			OptimizationUsed = #{optimizationUsed},
+			Runs = #{runs},
+			SourceCode = #{sourceCode},
+			SwarmSource = #{swarmSource},
+			Balance = #{Balance}
+		where ADDRESS = #{ADDRESS}
 		/* yjkellyjoo.contract.dao.SourcecodeDao.updateData */
 	</update>
 
-	<select id="selectCveListInLimit" parameterType="hashmap" resultMap="SourcecodeDataMap">
-		SELECT
-			AFFECTS 
-		FROM TB_SOURCECODE
-		ORDER BY
-			ID ASC
-		LIMIT #{start}, #{end}
-    	/* yjkellyjoo.contract.dao.SourcecodeDao.selectCveListInLimit */
-	</select>
- -->
+
+	<!--
+        <select id="selectCveListInLimit" parameterType="hashmap" resultMap="SourcecodeDataMap">
+            SELECT
+                AFFECTS
+            FROM TB_SOURCECODE
+            ORDER BY
+                ID ASC
+            LIMIT #{start}, #{end}
+            /* yjkellyjoo.contract.dao.SourcecodeDao.selectCveListInLimit */
+        </select>
+     -->
 </mapper>

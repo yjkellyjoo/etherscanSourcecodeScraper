@@ -52,4 +52,19 @@ public class SourcecodeDao extends ContractDaoSupport {
 		
 		getSqlSession().delete("yjkellyjoo.contract.dao.SourcecodeDao.deleteAllData");
 	}
+
+
+	/**
+	 * SOURCECODE 단일 레코드 갱신
+	 * @param address 키값
+	 * @return SOURCECODE 레코드
+	 */
+	public void updateData(String address) {
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("address", address);
+
+		getSqlSession().update("yjkellyjoo.contract.dao.SourcecodeDao.updateData", paramMap);
+	}
+
 }

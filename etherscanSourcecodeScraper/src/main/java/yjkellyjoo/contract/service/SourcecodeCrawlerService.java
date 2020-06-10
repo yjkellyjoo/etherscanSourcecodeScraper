@@ -8,11 +8,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.annotation.Resource;
+import javax.xml.transform.Source;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +46,11 @@ public class SourcecodeCrawlerService {
 	
 	public void manageContracts(String filePath) {
 		// get URLs
-		List<String> urls = this.getJsonURL(filePath);
+		Map<String, String> urls = this.getJsonURL(filePath);
 
 		// get Data from web
-		List<SourcecodeVo> contractArray = this.getData(urls);
-		
+		Map<String, SourcecodeVo> contractArray = this.getData(urls);
+
 		// insert data
 		this.insertAllData(contractArray);
 	}
@@ -61,13 +60,29 @@ public class SourcecodeCrawlerService {
 	 * insert all data into Database
 	 * @param list of contracts information in Sourcecode VO
 	 */
-	private void insertAllData(List<SourcecodeVo> contractArray) {
+	private void insertAllData(Map<String, SourcecodeVo> contractArray) {
+		List<SourcecodeVo> insertArray = new ArrayList<SourcecodeVo>();
+
 		if (!contractArray.isEmpty()) {
+			for (String address: contractArray.keySet()){
+
+				// if address not in DB, insert
+				SourcecodeVo contract = sourcecodeDao.selectData(address);
+				if (!contract.getAddress().isEmpty()){
+					insertArray.add(contract);
+				}
+
+				// if address in DB, update balance
+				else {
+					sourcecodeDao.updateData(address);
+				}
+			}
+
 			try {
-				sourcecodeDao.insertAllData(contractArray);
+				sourcecodeDao.insertAllData(insertArray);
 				log.info("  ---\tInserted Data\t  ---");
 			} catch (DataIntegrityViolationException e) {
-				for (SourcecodeVo sourcecodeVo : contractArray) {
+				for (SourcecodeVo sourcecodeVo : insertArray) {
 					log.error(sourcecodeVo.getAddress());
 				}
 			}
@@ -138,8 +153,8 @@ public class SourcecodeCrawlerService {
 	 * @param filePath
 	 * @return
 	 */
-	private List<String> getJsonURL(String filePath) {
-		List<String> urls = new ArrayList<String>();
+	private Map<String, String> getJsonURL(String filePath) {
+		Map<String, String> urls = new HashMap<String, String>();
 
 		BufferedReader reader;
 		try {
@@ -153,8 +168,8 @@ public class SourcecodeCrawlerService {
 				url.append(URL_FRONT);
 				url.append(address);
 				url.append(URL_BACK);
-				
-				urls.add(url.toString());
+
+				urls.put(address, url.toString());
 
 				try {
 					// read next line
@@ -180,24 +195,21 @@ public class SourcecodeCrawlerService {
 	 * @param	List of urls
 	 * @result	List of contract information in the form of SourcecodeVo
 	 */
-	private List<SourcecodeVo> getData(List<String> urls) {
-		List<SourcecodeVo> contractArray = new ArrayList<SourcecodeVo>();
+	private Map<String, SourcecodeVo> getData(Map<String, String> urls) {
+		Map<String, SourcecodeVo> contractArray = new HashMap<String, SourcecodeVo>();
 		int count = 1;
 		
-		for (String url : urls) {
+		for (String address : urls.keySet()) {
 			SourcecodeVo contract = null;
 
 			try {
 				JSONObject jsonText = null;
-				String rawText = fileUtil.readStringFromURL(url);
+				String rawText = fileUtil.readStringFromURL(urls.get(address));
 				jsonText = new JSONObject(rawText);
 				
 				if (jsonText.get("result").getClass() == JSONArray.class) {
 					JSONObject resultObject = jsonText.getJSONArray("result").getJSONObject(0);
 					if (Objects.nonNull(resultObject)) {
-						int beginIndex = url.indexOf("address") + 8;
-						int endIndex = url.indexOf("&apikey");
-						String address = url.substring(beginIndex, endIndex);
 						log.debug(address);
 						
 						contract = this.setOneData(resultObject, address);	
@@ -231,8 +243,8 @@ public class SourcecodeCrawlerService {
 			// write data with source code into array
 			if (contract != null) {
 				if (!contract.getSourceCode().isEmpty()) {
-					contractArray.add(contract);								
-					log.info("added : {}", contract.getAddress());					
+					contractArray.put(address, contract);
+					log.info("added : {}", contract.getAddress());
 				}
 			}
 
