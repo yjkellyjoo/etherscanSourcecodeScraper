@@ -1,8 +1,8 @@
 HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
+java/target/
+!java/.mvn/wrapper/maven-wrapper.jar
+!**java/src/main/**
+!**java/src/test/**
 
 upload_backup/
 
@@ -15,8 +15,8 @@ upload_backup/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+### JetBrain IDEA ###
+*/.idea
 *.iws
 *.iml
 *.ipr
