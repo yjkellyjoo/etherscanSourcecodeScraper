@@ -82,7 +82,7 @@
 	</delete>
 
 
-	<update id="updateData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
+	<update id="updateData">
 		update TB_SOURCECODE set
 			ABI = #{abi},
  			CompilerVersion = #{compilerVersion},
