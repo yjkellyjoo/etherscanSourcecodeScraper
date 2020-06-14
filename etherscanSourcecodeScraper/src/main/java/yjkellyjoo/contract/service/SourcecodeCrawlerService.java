@@ -1,18 +1,16 @@
 package yjkellyjoo.contract.service;
 
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import javax.annotation.Resource;
 import javax.xml.transform.Source;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,14 +43,40 @@ public class SourcecodeCrawlerService {
 
 	
 	public void manageContracts(String filePath) {
+		// JSON to Map
+		Map<String, Integer> balanceMap = JsonToMap(filePath);
+
 		// get URLs
 		Map<String, String> urls = this.getJsonURL(filePath);
 
 		// get Data from web
-		Map<String, SourcecodeVo> contractArray = this.getData(urls);
+		Map<String, SourcecodeVo> contractArray = this.getData(balanceMap, urls);
 
 		// insert data
 		this.insertAllData(contractArray);
+	}
+
+
+	/**
+	 * convert JSON into Map
+	 * @param filePath
+	 * @return balanceMap
+	 */
+	private Map<String, Integer> JsonToMap(String filePath){
+		ObjectMapper mapper = new ObjectMapper();
+
+		try{
+			Map<String, Integer> balanceMap = mapper.readValue(new File(filePath), new TypeReference<Map<String, Integer>>() {});
+			return balanceMap;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 
@@ -97,7 +121,7 @@ public class SourcecodeCrawlerService {
 	 * @param JSONObject containing Contract Data, String with the Contract Address
 	 * @return SourcecodeVo object
 	 */
-	private SourcecodeVo setOneData(JSONObject resultObject, String address) {
+	private SourcecodeVo setOneData(JSONObject resultObject, Integer balance, String address) {
 		SourcecodeVo contract = new SourcecodeVo();
 		
 		contract.setAbi(resultObject.get("ABI").toString());
@@ -115,6 +139,7 @@ public class SourcecodeCrawlerService {
 		}
 		contract.setSourceCode(resultObject.get("SourceCode").toString());
 		contract.setSwarmSource(resultObject.get("SwarmSource").toString());
+		contract.setBalance(balance.intValue());
 
 		return contract;
 	}
@@ -197,7 +222,7 @@ public class SourcecodeCrawlerService {
 	 * @param	List of urls
 	 * @result	List of contract information in the form of SourcecodeVo
 	 */
-	private Map<String, SourcecodeVo> getData(Map<String, String> urls) {
+	private Map<String, SourcecodeVo> getData(Map<String, Integer> balanceMap, Map<String, String> urls) {
 		Map<String, SourcecodeVo> contractArray = new HashMap<String, SourcecodeVo>();
 		int count = 1;
 		
@@ -214,7 +239,7 @@ public class SourcecodeCrawlerService {
 					if (Objects.nonNull(resultObject)) {
 						log.debug(address);
 						
-						contract = this.setOneData(resultObject, address);	
+						contract = this.setOneData(resultObject, balanceMap.get(address), address);
 						log.info("{} processed ", count);
 						count++;
 //					log.info(resultObject.toString());
