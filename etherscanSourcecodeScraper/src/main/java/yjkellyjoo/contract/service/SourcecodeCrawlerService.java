@@ -5,12 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.annotation.Resource;
-import javax.xml.transform.Source;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,14 +38,14 @@ public class SourcecodeCrawlerService {
 
 	
 	public void manageContracts(String filePath) {
-		// JSON to Map
-		Map<String, Integer> balanceMap = JsonToMap(filePath);
+		// get balance Map
+		Map<String, Integer> balances = getBalanceMap(filePath);
 
 		// get URLs
 		Map<String, String> urls = this.getJsonURL(filePath);
 
 		// get Data from web
-		Map<String, SourcecodeVo> contractArray = this.getData(balanceMap, urls);
+		Map<String, SourcecodeVo> contractArray = this.getData(balances, urls);
 
 		// insert data
 		this.insertAllData(contractArray);
@@ -62,21 +57,35 @@ public class SourcecodeCrawlerService {
 	 * @param filePath
 	 * @return balanceMap
 	 */
-	private Map<String, Integer> JsonToMap(String filePath){
-		ObjectMapper mapper = new ObjectMapper();
+	private Map<String, Integer> getBalanceMap(String filePath){
+		Map<String, Integer> balances = new HashMap<String, Integer>();
+		
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filePath));
+			String line = reader.readLine();
+			while (line != null) {
+				JSONObject obj = new JSONObject(line);
+				String address = obj.get("address").toString();
+				Integer balance = Integer.parseInt(obj.get("eth_balance").toString());
+				balances.put(address, balance);
 
-		try{
-			Map<String, Integer> balanceMap = mapper.readValue(new File(filePath), new TypeReference<Map<String, Integer>>() {});
-			return balanceMap;
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+				try {
+					// read next line
+					line = reader.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			reader.close();
+			
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-
-		return null;
+		
+		return balances;
 	}
 
 
