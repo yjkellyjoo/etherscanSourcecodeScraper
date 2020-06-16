@@ -39,7 +39,7 @@ public class SourcecodeCrawlerService {
 	
 	public void manageContracts(String filePath) {
 		// get balance Map
-		Map<String, Integer> balances = getBalanceMap(filePath);
+		Map<String, String> balances = getBalanceMap(filePath);
 
 		// get URLs
 		Map<String, String> urls = this.getJsonURL(filePath);
@@ -57,8 +57,8 @@ public class SourcecodeCrawlerService {
 	 * @param filePath
 	 * @return balanceMap
 	 */
-	private Map<String, Integer> getBalanceMap(String filePath){
-		Map<String, Integer> balances = new HashMap<String, Integer>();
+	private Map<String, String> getBalanceMap(String filePath){
+		Map<String, String> balances = new HashMap<String, String>();
 		
 		BufferedReader reader;
 		try {
@@ -67,7 +67,7 @@ public class SourcecodeCrawlerService {
 			while (line != null) {
 				JSONObject obj = new JSONObject(line);
 				String address = obj.get("address").toString();
-				Integer balance = Integer.parseInt(obj.get("eth_balance").toString());
+				String balance = obj.get("eth_balance").toString();
 				balances.put(address, balance);
 
 				try {
@@ -130,7 +130,7 @@ public class SourcecodeCrawlerService {
 	 * @param JSONObject containing Contract Data, String with the Contract Address
 	 * @return SourcecodeVo object
 	 */
-	private SourcecodeVo setOneData(JSONObject resultObject, Integer balance, String address) {
+	private SourcecodeVo setOneData(JSONObject resultObject, String balance, String address) {
 		SourcecodeVo contract = new SourcecodeVo();
 		
 		contract.setAbi(resultObject.get("ABI").toString());
@@ -148,7 +148,7 @@ public class SourcecodeCrawlerService {
 		}
 		contract.setSourceCode(resultObject.get("SourceCode").toString());
 		contract.setSwarmSource(resultObject.get("SwarmSource").toString());
-		contract.setBalance(balance.intValue());
+		contract.setBalance(balance);
 
 		return contract;
 	}
@@ -231,7 +231,7 @@ public class SourcecodeCrawlerService {
 	 * @param	List of urls
 	 * @result	List of contract information in the form of SourcecodeVo
 	 */
-	private Map<String, SourcecodeVo> getData(Map<String, Integer> balanceMap, Map<String, String> urls) {
+	private Map<String, SourcecodeVo> getData(Map<String, String> balanceMap, Map<String, String> urls) {
 		Map<String, SourcecodeVo> contractArray = new HashMap<String, SourcecodeVo>();
 		int count = 1;
 		

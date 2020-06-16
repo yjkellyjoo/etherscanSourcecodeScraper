@@ -15,6 +15,7 @@
 		<result column="Runs" property="runs" />  			
 		<result column="SourceCode" property="sourceCode" />  			
 		<result column="SwarmSource" property="swarmSource" /> 	
+		<result column="Balance" property="balance" />
 	</resultMap>
 
 	<sql id="selectCveSql">
@@ -29,7 +30,8 @@
 			TB_SOURCECODE.OptimizationUsed,
 			TB_SOURCECODE.Runs,
 			TB_SOURCECODE.SourceCode,	
-			TB_SOURCECODE.SwarmSource
+			TB_SOURCECODE.SwarmSource,
+			TB_SOURCECODE.Balance
 		FROM
 			TB_SOURCECODE
 	</sql>
