@@ -56,15 +56,20 @@ public class SourcecodeDao extends ContractDaoSupport {
 
 	/**
 	 * SOURCECODE 단일 레코드 갱신
-	 * @param address 키값
-	 * @return SOURCECODE 레코드
+	 * @param VO
 	 */
-	public void updateData(String balance) {
+	public void updateData(SourcecodeVo contract) {
 
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("address", balance);
-
-		getSqlSession().update("yjkellyjoo.contract.dao.SourcecodeDao.updateData", paramMap);
+		getSqlSession().update("yjkellyjoo.contract.dao.SourcecodeDao.updateData", contract);
+	}
+	
+	/**
+	 * SOURCECODE 다수 갱신
+	 * @param ContractList
+	 */
+	public void updateDataList(List<SourcecodeVo> ContractList) {
+		
+		getSqlSession().update("yjkellyjoo.contract.dao.SourcecodeDao.updateDataList", ContractList);
 	}
 
 }

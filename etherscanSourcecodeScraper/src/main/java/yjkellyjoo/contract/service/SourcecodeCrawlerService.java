@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.annotation.Resource;
+import javax.xml.transform.Source;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +47,8 @@ public class SourcecodeCrawlerService {
 
 		// get Data from web
 		Map<String, SourcecodeVo> contractArray = this.getData(balances, urls);
-
+		log.debug("{}", contractArray.size());
+		
 		// insert data
 		this.insertAllData(contractArray);
 	}
@@ -95,19 +97,24 @@ public class SourcecodeCrawlerService {
 	 */
 	private void insertAllData(Map<String, SourcecodeVo> contractArray) {
 		List<SourcecodeVo> insertArray = new ArrayList<SourcecodeVo>();
+		List<SourcecodeVo> updateArray = new ArrayList<SourcecodeVo>();
 
 		if (!contractArray.isEmpty()) {
 			for (String address: contractArray.keySet()){
-
+				SourcecodeVo contract = null;
+				contract = sourcecodeDao.selectData(address);
 				// if address not in DB, insert
-				SourcecodeVo contract = sourcecodeDao.selectData(address);
-				if (contract == null){
-					insertArray.add(contractArray.get(address));
+				if (Objects.isNull(contract)){
+					contract = contractArray.get(address);					
+					insertArray.add(contract);
+					log.debug("address not in DB: {}", address);
 				}
 
 				// if address in DB, update balance
 				else {
-					sourcecodeDao.updateData(address);
+					contract = contractArray.get(address);
+					updateArray.add(contract);
+					log.debug("update contract info {}, {} ", contract.getAddress(), contract.getBalance());
 				}
 			}
 
@@ -116,11 +123,21 @@ public class SourcecodeCrawlerService {
 					sourcecodeDao.insertAllData(insertArray);
 					log.info("  ---\tInserted Data\t  ---");
 				} catch (DataIntegrityViolationException e) {
-					for (SourcecodeVo sourcecodeVo : insertArray) {
-						log.error(sourcecodeVo.getAddress());
-					}
+					log.error("ERROR while insertAllData");
 				}				
 			}
+			
+			if (!updateArray.isEmpty()) {
+				try {
+					sourcecodeDao.updateDataList(updateArray);
+					log.info("  ---\tUpdated Data\t  ---");
+				} catch (DataIntegrityViolationException e) {
+					for (SourcecodeVo sourcecodeVo : updateArray) {
+						log.error("ERROR while updateDataList");
+					}
+				}
+			}
+
 		}
 	}
 	

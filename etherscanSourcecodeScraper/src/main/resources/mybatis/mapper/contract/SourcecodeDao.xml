@@ -40,7 +40,7 @@
 	<select id="selectData" resultMap="SourcecodeDataMap">
 		<include refid="selectCveSql" />
 		WHERE 
-			TB_SOURCECODE.ADDRESS = #{ADDRESS}	
+			Address = #{address}	
     	/* yjkellyjoo.contract.dao.SourcecodeDao.selectData */
 	</select>	
 	
@@ -86,11 +86,22 @@
 	</delete>
 
 
-	<update id="updateData">
+	<update id="updateData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
 		update TB_SOURCECODE set
 			Balance = #{balance}
-		where ADDRESS = #{ADDRESS}
+		where 
+			Address = #{address}
 		/* yjkellyjoo.contract.dao.SourcecodeDao.updateData */
+	</update>
+
+	<update id="updateDataList" parameterType="yjkellyjoo.contract.model.SourcecodeVo">
+		<foreach collection="list" item="item" separator="; ">
+			update TB_SOURCECODE set			
+				Balance = #{item.balance}
+		where 
+			Address = #{item.address}
+		</foreach>
+			/* yjkellyjoo.contract.dao.SourcecodeDao.updateDataList */
 	</update>
 
 
