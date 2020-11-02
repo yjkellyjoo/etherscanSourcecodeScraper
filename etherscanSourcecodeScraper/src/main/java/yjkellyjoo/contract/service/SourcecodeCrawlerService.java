@@ -5,7 +5,6 @@ import java.io.*;
 import java.util.*;
 
 import javax.annotation.Resource;
-import javax.xml.transform.Source;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +23,7 @@ import yjkellyjoo.runtime.util.FileUtil;
  * @author 	yjkellyjoo
  * @since	2020. 04. 03.
  */
+@SuppressWarnings({"TryWithIdenticalCatches", "StringBufferReplaceableByString", "StringBufferMayBeStringBuilder", "SpellCheckingInspection"})
 @Slf4j
 @Service("yjkellyjoo.contract.service.SourcecodeCrawlerService")
 public class SourcecodeCrawlerService {
@@ -54,13 +54,13 @@ public class SourcecodeCrawlerService {
 	}
 
 
-	/**
+	/*
 	 * convert JSON into Map
 	 * @param filePath
 	 * @return balanceMap
 	 */
 	private Map<String, String> getBalanceMap(String filePath){
-		Map<String, String> balances = new HashMap<String, String>();
+		Map<String, String> balances = new HashMap<>();
 		
 		BufferedReader reader;
 		try {
@@ -83,23 +83,23 @@ public class SourcecodeCrawlerService {
 			
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (JSONException e1) {
-			e1.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		} catch (JSONException e3) {
+			e3.printStackTrace();
 		}
 		
 		return balances;
 	}
 
 
-	/**
+	/*
 	 * insert all data into Database
 	 * @param list of contracts information in Sourcecode VO
 	 */
 	private void insertAllData(Map<String, SourcecodeVo> contractArray) {
-		List<SourcecodeVo> insertArray = new ArrayList<SourcecodeVo>();
-		List<SourcecodeVo> updateArray = new ArrayList<SourcecodeVo>();
+		List<SourcecodeVo> insertArray = new ArrayList<>();
+		List<SourcecodeVo> updateArray = new ArrayList<>();
 
 		if (!contractArray.isEmpty()) {
 			for (String address: contractArray.keySet()){
@@ -134,9 +134,7 @@ public class SourcecodeCrawlerService {
 					sourcecodeDao.updateDataList(updateArray);
 					log.info("  ---\tUpdated Data\t  ---");
 				} catch (DataIntegrityViolationException e) {
-					for (SourcecodeVo sourcecodeVo : updateArray) {
-						log.error("ERROR while updateDataList");
-					}
+					log.error("ERROR while updateDataList");
 				}
 			}
 
@@ -144,7 +142,7 @@ public class SourcecodeCrawlerService {
 	}
 	
 
-	/**
+	/*
 	 * Set one Contract Data info into one SourcecodeVo object
 	 * @param JSONObject containing Contract Data, String with the Contract Address
 	 * @return SourcecodeVo object
@@ -177,7 +175,7 @@ public class SourcecodeCrawlerService {
 	}
 	
 	
-	/**
+	/*
 	 * make URLs from address information in CSV file
 	 * @return ArrayList containing url strings
 	 */
@@ -207,13 +205,13 @@ public class SourcecodeCrawlerService {
 //	}
 
 	
-	/**
+	/*
 	 * get URLs from a json file
 	 * @param filePath
 	 * @return
 	 */
 	private Map<String, String> getJsonURL(String filePath) {
-		Map<String, String> urls = new HashMap<String, String>();
+		Map<String, String> urls = new HashMap<>();
 
 		BufferedReader reader;
 		try {
@@ -250,13 +248,13 @@ public class SourcecodeCrawlerService {
 		return urls;
 	}
 	
-	/**
+	/*
 	 * get data from the urls and write the result into an array
 	 * @param	List of urls
 	 * @result	List of contract information in the form of SourcecodeVo
 	 */
 	private Map<String, SourcecodeVo> getData(Map<String, String> balanceMap, Map<String, String> urls) {
-		Map<String, SourcecodeVo> contractArray = new HashMap<String, SourcecodeVo>();
+		Map<String, SourcecodeVo> contractArray = new HashMap<>();
 		int count = 1;
 		
 		for (String address : urls.keySet()) {
