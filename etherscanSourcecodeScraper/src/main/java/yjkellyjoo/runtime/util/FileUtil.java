@@ -30,6 +30,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Value;
@@ -198,11 +199,12 @@ public class FileUtil {
     		log.debug("destDir is {}", destDir);
     		
             jsonObject = XML.toJSONObject(data);
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
         	log.error("xmlToJson convert error");
             e.printStackTrace();
-        }
+        } catch (JSONException e) {
+			e.printStackTrace();
+		}
 		
 		log.info("End converting XML to JSON ");
 		return jsonObject;

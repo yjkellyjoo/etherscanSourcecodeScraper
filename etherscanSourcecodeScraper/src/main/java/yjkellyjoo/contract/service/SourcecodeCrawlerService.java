@@ -85,6 +85,8 @@ public class SourcecodeCrawlerService {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
+		} catch (JSONException e1) {
+			e1.printStackTrace();
 		}
 		
 		return balances;
@@ -149,25 +151,29 @@ public class SourcecodeCrawlerService {
 	 */
 	private SourcecodeVo setOneData(JSONObject resultObject, String balance, String address) {
 		SourcecodeVo contract = new SourcecodeVo();
-		
-		contract.setAbi(resultObject.get("ABI").toString());
-		contract.setAddress(address);
-		contract.setCompilerVersion(resultObject.get("CompilerVersion").toString());
-		contract.setConstructorArguments(resultObject.get("ConstructorArguments").toString());
-		contract.setContractName(resultObject.get("ContractName").toString());
-		contract.setLibrary(resultObject.get("Library").toString());
-		contract.setLicenseType(resultObject.get("LicenseType").toString());
-		if (!resultObject.get("OptimizationUsed").toString().isEmpty()) {
-			contract.setOptimizationUsed(Integer.parseInt(resultObject.get("OptimizationUsed").toString()));			
-		}
-		if (!resultObject.get("Runs").toString().isEmpty()) {
-			contract.setRuns(Integer.parseInt(resultObject.get("Runs").toString()));			
-		}
-		contract.setSourceCode(resultObject.get("SourceCode").toString());
-		contract.setSwarmSource(resultObject.get("SwarmSource").toString());
-		contract.setBalance(balance);
+		try {
+			contract.setAbi(resultObject.get("ABI").toString());
+			contract.setAddress(address);
+			contract.setCompilerVersion(resultObject.get("CompilerVersion").toString());
+			contract.setConstructorArguments(resultObject.get("ConstructorArguments").toString());
+			contract.setContractName(resultObject.get("ContractName").toString());
+			contract.setLibrary(resultObject.get("Library").toString());
+			contract.setLicenseType(resultObject.get("LicenseType").toString());
+			if (!resultObject.get("OptimizationUsed").toString().isEmpty()) {
+				contract.setOptimizationUsed(Integer.parseInt(resultObject.get("OptimizationUsed").toString()));
+			}
+			if (!resultObject.get("Runs").toString().isEmpty()) {
+				contract.setRuns(Integer.parseInt(resultObject.get("Runs").toString()));
+			}
+			contract.setSourceCode(resultObject.get("SourceCode").toString());
+			contract.setSwarmSource(resultObject.get("SwarmSource").toString());
+			contract.setBalance(balance);
 
-		return contract;
+			return contract;
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+			return null;
+		}
 	}
 	
 	
@@ -237,7 +243,8 @@ public class SourcecodeCrawlerService {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
-		
+		} catch (JSONException e1) {
+			e1.printStackTrace();
 		}
 		
 		return urls;
