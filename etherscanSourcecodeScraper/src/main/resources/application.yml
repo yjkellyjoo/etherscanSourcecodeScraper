@@ -13,7 +13,7 @@ spring:
   profiles: local
   datasource:
     driver-class-name: "com.mysql.cj.jdbc.Driver"
-    url: "jdbc:mysql://203.230.60.101:3306/contracts?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
+    url: "jdbc:mysql://localhost:3306/contracts?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
     username: "contract"
     password: "Smart12#"
  
