@@ -10,33 +10,27 @@
 
 package yjkellyjoo.runtime.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.Scanner;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.ZipFile;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.*;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 /**
  * 
@@ -53,7 +47,7 @@ public class FileUtil {
 	
 	/**
 	 * 특정 URL로부터 text string 다운로드
-	 * @param url
+	 * @param requestURL URL to get JSON info from
 	 * @return
 	 */
 	public String readStringFromURL(String requestURL) throws IOException {
@@ -62,13 +56,17 @@ public class FileUtil {
 	    {
 	        scanner.useDelimiter("\\A");
 	        return scanner.hasNext() ? scanner.next() : "";
-	    }
+	    } catch (UnknownHostException e1) {
+	    	log.error(requestURL);
+	    	e1.printStackTrace();
+	    	return "";
+		}
 	}
 	
 	/**
 	 * 파일 위치 옮기
-	 * @param srcFile
-	 * @param desDir
+	 * @param srcFile source file
+	 * @param desFile description directory
 	 * @throws IOException 
 	 */
 	public Path moveFile(String srcFile, String desFile) throws IOException {
@@ -132,7 +130,7 @@ public class FileUtil {
         	return null;
         } finally {
             if (gzip.isFile() && !FileUtils.deleteQuietly(gzip)) {
-                log.error("Failed to delete temporary file when extracting 'gz' {}", gzip.toString());
+                log.error("Failed to delete temporary file when extracting 'gz' {}", gzip);
                 gzip.deleteOnExit();
             }
         }
@@ -169,7 +167,7 @@ public class FileUtil {
         	return null;
         } finally {
             if (zip.isFile() && !FileUtils.deleteQuietly(zip)) {
-                log.error("Failed to delete temporary file when extracting 'zip' {}", zip.toString());
+                log.error("Failed to delete temporary file when extracting 'zip' {}", zip);
                 zip.deleteOnExit();
             }
         }

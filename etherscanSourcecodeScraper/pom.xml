@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>yjkellyjoo</groupId>
 	<artifactId>etherscanSourcecodeScraper</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>etherscanSourcecodeScraper</name>
 	<description>Scrapping Etherscan's verified contracts' source code</description>
 

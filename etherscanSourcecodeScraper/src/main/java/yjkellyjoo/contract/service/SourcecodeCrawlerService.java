@@ -1,21 +1,19 @@
 package yjkellyjoo.contract.service;
 
 
-import java.io.*;
-import java.util.*;
-
-import javax.annotation.Resource;
-
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import yjkellyjoo.contract.dao.SourcecodeDao;
 import yjkellyjoo.contract.model.SourcecodeVo;
 import yjkellyjoo.runtime.util.FileUtil;
+
+import javax.annotation.Resource;
+import java.io.*;
+import java.util.*;
 
 
 /**
@@ -256,58 +254,63 @@ public class SourcecodeCrawlerService {
 	private Map<String, SourcecodeVo> getData(Map<String, String> balanceMap, Map<String, String> urls) {
 		Map<String, SourcecodeVo> contractArray = new HashMap<>();
 		int count = 1;
-		
-		for (String address : urls.keySet()) {
-			SourcecodeVo contract = null;
 
-			try {
-				JSONObject jsonText = null;
-				String rawText = fileUtil.readStringFromURL(urls.get(address));
-				jsonText = new JSONObject(rawText);
-				
-				if (jsonText.get("result").getClass() == JSONArray.class) {
-					JSONObject resultObject = jsonText.getJSONArray("result").getJSONObject(0);
-					if (Objects.nonNull(resultObject)) {
-						log.debug(address);
-						
-						contract = this.setOneData(resultObject, balanceMap.get(address), address);
-						log.info("{} processed ", count);
-						count++;
-//					log.info(resultObject.toString());
+		Map<String, String> urls_copy = new HashMap<>(urls);
+
+		while (!urls_copy.isEmpty()) {
+			for (String address : urls.keySet()) {
+				SourcecodeVo contract = null;
+
+				try {
+					JSONObject jsonText = null;
+					String rawText = fileUtil.readStringFromURL(urls.get(address));
+					jsonText = new JSONObject(rawText);
+
+					if (jsonText.get("result").getClass() == JSONArray.class) {
+						JSONObject resultObject = jsonText.getJSONArray("result").getJSONObject(0);
+						if (Objects.nonNull(resultObject)) {
+							log.debug(address);
+
+							contract = this.setOneData(resultObject, balanceMap.get(address), address);
+							log.info("{} processed ", count);
+							urls_copy.remove(address);
+							count++;
+//							log.info(resultObject.toString());
+						}
+					}
+
+					// write error info into another file
+					else {
+						String fileName = System.getProperty("user.dir");
+						String resultText = jsonText.getString("result");
+
+						FileOutputStream fos = new FileOutputStream(fileName + "errorLog.txt");
+						DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
+						outStream.writeUTF(resultText);
+						outStream.close();
+					}
+
+				} catch (IOException e) {
+					log.error("reading text from URL error");
+					e.printStackTrace();
+//					log.debug(contract.getAddress());
+				} catch (JSONException e) {
+					log.error("JSON conversion error");
+					e.printStackTrace();
+//					log.debug(contract.getAddress());
+				}
+
+				// write data with source code into array
+				if (contract != null) {
+					if (!contract.getSourceCode().isEmpty()) {
+						contractArray.put(address, contract);
+						log.info("added : {}", contract.getAddress());
 					}
 				}
-				
-				// write error info into another file
-				else {
-					String fileName = System.getProperty("user.dir");
-				    String resultText = jsonText.getString("result");
-				    
-				    FileOutputStream fos = new FileOutputStream(fileName + "errorLog.txt");
-				    DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
-				    outStream.writeUTF(resultText);
-				    outStream.close();
-				}
-				
-			} catch (IOException e) {
-				log.error("reading text from URL error");
-				e.printStackTrace();
-//				log.debug(contract.getAddress());
-			} catch (JSONException e) {
-				log.error("JSON conversion error");
-				e.printStackTrace();
-//				log.debug(contract.getAddress());
 			}
 
-			// write data with source code into array
-			if (contract != null) {
-				if (!contract.getSourceCode().isEmpty()) {
-					contractArray.put(address, contract);
-					log.info("added : {}", contract.getAddress());
-				}
-			}
-
+		urls = new HashMap<>(urls_copy);
 		}
-
 		return contractArray;
 	}
 	

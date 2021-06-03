@@ -1,16 +1,15 @@
 package yjkellyjoo.contract.crawler;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.annotation.Resource;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import lombok.extern.slf4j.Slf4j;
 import yjkellyjoo.contract.service.SourcecodeCrawlerService;
 import yjkellyjoo.runtime.util.FileUtil;
+
+import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 
@@ -37,16 +36,16 @@ public class SourcecodeCrawler {
 		
 		String filePath = pathRelUploadBackup + CONTRACTDIR;
 		String desPath =  pathRelUploadBackup + CONTRACTDONE;
-		Integer fileNumber = new File(filePath).listFiles().length;
-		log.info("  ---\t number of files... {}", fileNumber.toString());
+		int fileNumber = Objects.requireNonNull(new File(filePath).listFiles()).length;
+		log.info("  ---\t number of files... {}", fileNumber);
 		
 		// get URLs from csv file
 //		ArrayList<String> urls = this.getCsvURL();
 	
 		// process json files one by one
-		for (int i = 1; i <= fileNumber.intValue(); i++) {
+		for (int i = 1; i <= fileNumber; i++) {
 			sourcecodeCrawlerService.manageContracts(filePath + i + ".json");
-			
+
 			// move the finished file into a different folder
 			try {
 				fileUtil.moveFile(filePath + i + ".json", desPath + i + ".json");
