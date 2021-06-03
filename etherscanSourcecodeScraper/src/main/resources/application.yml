@@ -5,7 +5,7 @@ spring:
 
   #profile 설정을 안했을 시 active profile
   profiles:
-    active: local
+    active: dev
 
 ---
 
@@ -16,7 +16,18 @@ spring:
     url: "jdbc:mysql://localhost:3306/contracts?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
     username: "contract"
     password: "Smart12#"
- 
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    url: "jdbc:mysql://210.223.20.235:33033/contracts?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
+    username: "contract"
+    password: "Smart12#"
+
+
 
 mybatis:
   mapper-locations: "classpath:mybatis/mapper/**/*.xml"

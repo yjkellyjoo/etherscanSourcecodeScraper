@@ -43,6 +43,9 @@ public class SourcecodeCrawlerService {
 		// get URLs
 		Map<String, String> urls = this.getJsonURL(filePath);
 
+		// remove already existing URLs
+		urls = this.postProcessURL(urls);
+
 		// get Data from web
 		Map<String, SourcecodeVo> contractArray = this.getData(balances, urls);
 		log.debug("{}", contractArray.size());
@@ -50,7 +53,6 @@ public class SourcecodeCrawlerService {
 		// insert data
 		this.insertAllData(contractArray);
 	}
-
 
 	/*
 	 * convert JSON into Map
@@ -101,7 +103,7 @@ public class SourcecodeCrawlerService {
 
 		if (!contractArray.isEmpty()) {
 			for (String address: contractArray.keySet()){
-				SourcecodeVo contract = null;
+				SourcecodeVo contract;
 				contract = sourcecodeDao.selectData(address);
 				// if address not in DB, insert
 				if (Objects.isNull(contract)){
@@ -245,7 +247,22 @@ public class SourcecodeCrawlerService {
 		
 		return urls;
 	}
-	
+
+
+	private Map<String, String> postProcessURL(Map<String, String> urls) {
+		Map<String, String> postUrls = new HashMap<>(urls);
+
+		for (String address : urls.keySet()) {
+			SourcecodeVo sourcecodeVo = sourcecodeDao.selectData(address);
+			if (sourcecodeVo != null) {
+				postUrls.remove(address);
+			}
+		}
+
+		return postUrls;
+	}
+
+
 	/*
 	 * get data from the urls and write the result into an array
 	 * @param	List of urls
@@ -262,7 +279,7 @@ public class SourcecodeCrawlerService {
 				SourcecodeVo contract = null;
 
 				try {
-					JSONObject jsonText = null;
+					JSONObject jsonText;
 					String rawText = fileUtil.readStringFromURL(urls.get(address));
 					jsonText = new JSONObject(rawText);
 
