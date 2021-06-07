@@ -299,12 +299,15 @@ public class SourcecodeCrawlerService {
 					// write error info into another file
 					else {
 						String fileName = System.getProperty("user.dir");
-						String resultText = jsonText.getString("result");
+						String resultText = jsonText.toString();
 
-						FileOutputStream fos = new FileOutputStream(fileName + "errorLog.txt");
+						FileOutputStream fos = new FileOutputStream(fileName + "/error.log");
 						DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
 						outStream.writeUTF(resultText);
 						outStream.close();
+
+						log.error("{} error detected", address);
+						urls_copy.remove(address);
 					}
 
 				} catch (IOException e) {

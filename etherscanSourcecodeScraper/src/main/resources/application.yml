@@ -5,7 +5,7 @@ spring:
 
   #profile 설정을 안했을 시 active profile
   profiles:
-    active: dev
+    active: local
 
 ---
 
@@ -17,6 +17,9 @@ spring:
     username: "contract"
     password: "Smart12#"
 
+mybatis:
+  mapper-locations: "classpath:mybatis/mapper/**/*.xml"
+
 ---
 
 spring:
@@ -26,8 +29,6 @@ spring:
     url: "jdbc:mysql://210.223.20.235:33033/contracts?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useServerPrepStmts=true&rewriteBatchedStatements=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true"
     username: "contract"
     password: "Smart12#"
-
-
 
 mybatis:
   mapper-locations: "classpath:mybatis/mapper/**/*.xml"
