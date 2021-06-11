@@ -249,6 +249,11 @@ public class SourcecodeCrawlerService {
 	}
 
 
+	/*
+	 * remove urls of addresses that we already have the source code of.
+	 * @param	List of urls
+	 * @result	List of processed urls
+	 */
 	private Map<String, String> postProcessURL(Map<String, String> urls) {
 		Map<String, String> postUrls = new HashMap<>(urls);
 
@@ -296,14 +301,19 @@ public class SourcecodeCrawlerService {
 						}
 					}
 
-					// write error info into another file
+					// in case etherscan.io API time limit is reached, reinquire.
+					else if(jsonText.get("result").toString().contains("Max rate limit reached")) {
+						continue;
+					}
+
+					// log error info into error.log
 					else {
 						String fileName = System.getProperty("user.dir");
-						String resultText = jsonText.toString();
+						String resultText = jsonText.get("result").toString();
 
-						FileOutputStream fos = new FileOutputStream(fileName + "/error.log");
+						FileOutputStream fos = new FileOutputStream(fileName + "/error.log", true);
 						DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(fos));
-						outStream.writeUTF(resultText);
+						outStream.writeUTF(resultText + '\t' + address + '\n');
 						outStream.close();
 
 						log.error("{} error detected", address);
