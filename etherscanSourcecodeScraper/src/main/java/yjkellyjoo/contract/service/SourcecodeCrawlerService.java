@@ -49,7 +49,6 @@ public class SourcecodeCrawlerService {
 		// get Data from web
 		Map<String, SourcecodeVo> contractArray = this.getData(balances, urls);
 		log.debug("{}", contractArray.size());
-		log.info("{} done ", filePath);
 
 		// insert data
 		this.insertAllData(contractArray);

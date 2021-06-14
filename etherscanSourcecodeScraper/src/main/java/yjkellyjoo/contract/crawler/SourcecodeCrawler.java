@@ -45,6 +45,7 @@ public class SourcecodeCrawler {
 		// process json files one by one
 		for (int i = 1; i <= fileNumber; i++) {
 			sourcecodeCrawlerService.manageContracts(filePath + i + ".json");
+			log.info("{} done ", i + ".json");
 
 			// move the finished file into a different folder
 			try {
