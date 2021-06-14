@@ -49,7 +49,8 @@ public class SourcecodeCrawlerService {
 		// get Data from web
 		Map<String, SourcecodeVo> contractArray = this.getData(balances, urls);
 		log.debug("{}", contractArray.size());
-		
+		log.info("{} done ", filePath);
+
 		// insert data
 		this.insertAllData(contractArray);
 	}
@@ -275,11 +276,10 @@ public class SourcecodeCrawlerService {
 	 */
 	private Map<String, SourcecodeVo> getData(Map<String, String> balanceMap, Map<String, String> urls) {
 		Map<String, SourcecodeVo> contractArray = new HashMap<>();
-		int count = 1;
-
 		Map<String, String> urls_copy = new HashMap<>(urls);
 
 		while (!urls_copy.isEmpty()) {
+		int count = 1;
 			for (String address : urls.keySet()) {
 				SourcecodeVo contract = null;
 
