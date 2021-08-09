@@ -52,9 +52,9 @@
 			CompilerVersion, 
 			ConstructorArguments, 
 			ContractName, 
-<!--			Library, -->
-			LicenseType, 
-<!--			OptimizationUsed,-->
+-- 			Library,
+			LicenseType,
+-- 			OptimizationUsed,
 -- 			Runs,
 			SourceCode,
 			SwarmSource,
@@ -78,12 +78,6 @@
 		</foreach>
 		/* yjkellyjoo.contract.dao.SourcecodeDao.insertAllData */
 	</insert>
-
-
-	<delete id="deleteAllData">
-		DELETE FROM TB_SOURCECODE
-		/* yjkellyjoo.contract.dao.SourcecodeDao.deleteAllData */
-	</delete>
 
 
 	<update id="updateData" parameterType="yjkellyjoo.contract.model.SourcecodeVo">

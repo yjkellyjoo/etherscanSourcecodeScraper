@@ -43,15 +43,6 @@ public class SourcecodeDao extends ContractDaoSupport {
 //		}
 		getSqlSession().insert("yjkellyjoo.contract.dao.SourcecodeDao.insertAllData", contractArray);
 	}
-	
-	
-	/**
-	 * SOURCECODE 테이블 지우기
-	 */
-	public void deleteAllData() {
-		
-		getSqlSession().delete("yjkellyjoo.contract.dao.SourcecodeDao.deleteAllData");
-	}
 
 
 	/**
