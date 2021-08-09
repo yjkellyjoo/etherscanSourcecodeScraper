@@ -16,10 +16,10 @@ public class SourcecodeVo {
 	private String compilerVersion;
 	private String constructorArguments;
 	private String contractName;
-	private String library;
+//	private String library;
 	private String licenseType;
-	private int optimizationUsed;
-	private int runs;
+//	private int optimizationUsed;
+//	private int runs;
 	private String sourceCode;
 	private String swarmSource;
 	private String balance;

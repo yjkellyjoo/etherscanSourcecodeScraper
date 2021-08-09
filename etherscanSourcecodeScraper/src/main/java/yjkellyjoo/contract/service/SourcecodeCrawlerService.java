@@ -155,14 +155,14 @@ public class SourcecodeCrawlerService {
 			contract.setCompilerVersion(resultObject.get("CompilerVersion").toString());
 			contract.setConstructorArguments(resultObject.get("ConstructorArguments").toString());
 			contract.setContractName(resultObject.get("ContractName").toString());
-			contract.setLibrary(resultObject.get("Library").toString());
+//			contract.setLibrary(resultObject.get("Library").toString());
 			contract.setLicenseType(resultObject.get("LicenseType").toString());
-			if (!resultObject.get("OptimizationUsed").toString().isEmpty()) {
-				contract.setOptimizationUsed(Integer.parseInt(resultObject.get("OptimizationUsed").toString()));
-			}
-			if (!resultObject.get("Runs").toString().isEmpty()) {
-				contract.setRuns(Integer.parseInt(resultObject.get("Runs").toString()));
-			}
+//			if (!resultObject.get("OptimizationUsed").toString().isEmpty()) {
+//				contract.setOptimizationUsed(Integer.parseInt(resultObject.get("OptimizationUsed").toString()));
+//			}
+//			if (!resultObject.get("Runs").toString().isEmpty()) {
+//				contract.setRuns(Integer.parseInt(resultObject.get("Runs").toString()));
+//			}
 			contract.setSourceCode(resultObject.get("SourceCode").toString());
 			contract.setSwarmSource(resultObject.get("SwarmSource").toString());
 			contract.setBalance(balance);

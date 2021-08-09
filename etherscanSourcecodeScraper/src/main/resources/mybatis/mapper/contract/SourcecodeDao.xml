@@ -9,10 +9,10 @@
 		<result column="CompilerVersion" property="compilerVersion" />  			
 		<result column="ConstructorArguments" property="constructorArguments" />  			
 		<result column="ContractName" property="contractName" />  			
-		<result column="Library" property="library" />			
+<!--		<result column="Library" property="library" />			-->
 		<result column="LicenseType" property="licenseType" />  			
-		<result column="OptimizationUsed" property="optimizationUsed" />  			
-		<result column="Runs" property="runs" />  			
+<!--		<result column="OptimizationUsed" property="optimizationUsed" />  			-->
+<!--		<result column="Runs" property="runs" />  			-->
 		<result column="SourceCode" property="sourceCode" />  			
 		<result column="SwarmSource" property="swarmSource" /> 	
 		<result column="Balance" property="balance" />
@@ -25,10 +25,10 @@
 			TB_SOURCECODE.CompilerVersion, 
 			TB_SOURCECODE.ConstructorArguments, 
 			TB_SOURCECODE.ContractName, 
-			TB_SOURCECODE.Library, 
+-- 			TB_SOURCECODE.Library,
 			TB_SOURCECODE.LicenseType, 
-			TB_SOURCECODE.OptimizationUsed,
-			TB_SOURCECODE.Runs,
+-- 			TB_SOURCECODE.OptimizationUsed,
+-- 			TB_SOURCECODE.Runs,
 			TB_SOURCECODE.SourceCode,	
 			TB_SOURCECODE.SwarmSource,
 			TB_SOURCECODE.Balance
@@ -52,11 +52,11 @@
 			CompilerVersion, 
 			ConstructorArguments, 
 			ContractName, 
-			Library, 
+<!--			Library, -->
 			LicenseType, 
-			OptimizationUsed,
-			Runs,
-			SourceCode,	
+<!--			OptimizationUsed,-->
+-- 			Runs,
+			SourceCode,
 			SwarmSource,
 			Balance
 		) VALUES 
@@ -67,10 +67,10 @@
 			#{item.compilerVersion},
 			#{item.constructorArguments},
 			#{item.contractName},
-			#{item.library},
+-- 			#{item.library},
 			#{item.licenseType},
-			#{item.optimizationUsed},
-			#{item.runs},
+-- 			#{item.optimizationUsed},
+-- 			#{item.runs},
 			#{item.sourceCode},
 			#{item.swarmSource},
 			#{item.balance}
